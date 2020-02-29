@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 class WeatherInfo extends Component {
   render() {
@@ -42,5 +43,12 @@ class WeatherInfo extends Component {
     );
   }
 }
-
+WeatherInfo.propTypes = {
+  weatherData: PropTypes.object,
+  widgetTitle: PropTypes.string,
+  windUnit: PropTypes.string,
+  callBackTemperature: PropTypes.func,
+  callBackWind: PropTypes.func,
+  calBackTitle: PropTypes.func
+};
 export default WeatherInfo;

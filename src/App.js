@@ -183,37 +183,43 @@ class App extends Component {
       );
     } else {
       return (
-        <div className="App">
-          <Navbar />
-          <div className="container-fluid" style={{ marginTop: "80px" }}>
-            <div className="card mainCard">
-              <div className="card-body">
-                <div className="row">
-                  <div className="col-lg-6 col-md-6 vl">
-                    <WidgetEditor
-                      tempUnit={this.state.defaultTemperatureUnit}
-                      windUnit={this.state.defaultWind}
-                      callBackTemperature={this.tempHandler}
-                      callBackWind={this.windHandler}
-                      callBackTitle={this.titleHandler}
-                    />
-                  </div>
+        <React.Fragment>
+          <div className="App">
+            <Navbar />
+            <main>
+              <div className="container-fluid" style={{ marginTop: "80px" }}>
+                <article>
+                  <div className="card mainCard">
+                    <div className="card-body">
+                      <div className="row">
+                        <div className="col-lg-6 col-md-6 vl">
+                          <WidgetEditor
+                            tempUnit={this.state.defaultTemperatureUnit}
+                            windUnit={this.state.defaultWind}
+                            callBackTemperature={this.tempHandler}
+                            callBackWind={this.windHandler}
+                            callBackTitle={this.titleHandler}
+                          />
+                        </div>
 
-                  {/* <div className=" col-md-4 vl"></div> */}
-                  <div className="col-lg-6 col-md-6">
-                    <WeatherInfo
-                      weatherData={this.state.weatherData}
-                      tempUnit={this.state.defaultTemperatureUnit}
-                      windUnit={this.state.defaultWind}
-                      s
-                      widgetTitle={this.state.defaultTitle}
-                    />
+                        {/* <div className=" col-md-4 vl"></div> */}
+                        <div className="col-lg-6 col-md-6">
+                          <WeatherInfo
+                            weatherData={this.state.weatherData}
+                            tempUnit={this.state.defaultTemperatureUnit}
+                            windUnit={this.state.defaultWind}
+                            s
+                            widgetTitle={this.state.defaultTitle}
+                          />
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                </article>
               </div>
-            </div>
+            </main>
           </div>
-        </div>
+        </React.Fragment>
       );
     }
   }

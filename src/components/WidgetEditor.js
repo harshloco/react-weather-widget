@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 class WidgetEditor extends Component {
   constructor(props) {
@@ -97,4 +98,12 @@ class WidgetEditor extends Component {
   }
 }
 
+WidgetEditor.propTypes = {
+  defaultTitle: PropTypes.string,
+  tempUnit: PropTypes.string,
+  windUnit: PropTypes.string,
+  callBackTemperature: PropTypes.func,
+  callBackWind: PropTypes.func,
+  calBackTitle: PropTypes.func
+};
 export default WidgetEditor;
