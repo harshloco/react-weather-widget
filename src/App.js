@@ -72,16 +72,18 @@ class App extends Component {
             lon: pos.coords.longitude,
             isLoading: false
           });
-          // console.log("navigatoe " + this.state.lat + "line 137");
-          if (!this.state.isLoading) {
+          //console.log("navigatoe " + this.state.lat + "line 137");
+          //query open weather only if we have lat and lon
+          if (!this.state.isLoading && this.state.lat && this.state.lon) {
             const url = `https://api.openweathermap.org/data/2.5/weather?lat=${this.state.lat}&lon=${this.state.lon}&APPID=${API_KEY}`;
-            console.log(url);
+            // console.log(url);
             fetch(url)
               .then(handleErrors)
               .then(resp => resp.json())
               .then(data => {
                 var deg = Math.floor(data.wind.deg);
                 //calcualte wind direction
+                //Online Resource --- calculation logic from => https://gist.github.com/Shivabeach/05585b99501e3ab5e27c12ea7adf13d5
                 deg = WindDirectionCalculation(deg);
 
                 // console.log(data.weather[0].icon);
@@ -99,7 +101,10 @@ class App extends Component {
                   searchDone: true,
                   errorMessage: ""
                 });
-                this.setState({ city: data.name, temp: data.main.temp });
+                this.setState({
+                  city: data.name,
+                  temp: data.main.temp
+                });
                 // console.log(
                 //   "icon " + this.state.weather.icon + " TEMP " + this.state.temp
                 // );
@@ -117,34 +122,50 @@ class App extends Component {
             return response;
           }
         },
-        showError,
+        error => {
+          this.showError(error);
+        },
         options
       );
     } else {
       this.setState({
-        errorMessage: "Geolocation is not supported by this browser."
+        errorMessage: "Geolocation is not supported by this browser.",
+        searchDone: true
       });
     }
+  }
+  showError(error) {
+    switch (error.code) {
+      case error.PERMISSION_DENIED:
+        this.setState({
+          errorMessage: "User denied the request for Geolocation.",
+          searchDone: true
+        });
+        break;
+      case error.POSITION_UNAVAILABLE:
+        this.setState({
+          errorMessage: "Location information is unavailable.",
+          searchDone: true
+        });
 
-    function showError(error) {
-      switch (error.code) {
-        case error.PERMISSION_DENIED:
-          console.log("User denied the request for Geolocation.");
-          break;
-        case error.POSITION_UNAVAILABLE:
-          console.log("Location information is unavailable.");
-          break;
-        case error.TIMEOUT:
-          console.log("The request to get user location timed out.");
-          break;
-        case error.UNKNOWN_ERROR:
-          console.log("An unknown error occurred.");
-          break;
-        default:
-          console.log("An unknown error occurred.");
-          break;
-      }
+        break;
+      case error.TIMEOUT:
+        this.setState({
+          errorMessage: "The request to get user location timed out.",
+          searchDone: true
+        });
+
+        break;
+      default:
+        this.setState({
+          errorMessage: "An unknown error occurred.",
+          searchDone: true
+        });
+
+        break;
     }
+
+    // console.log("An unknown error occurred ." + this.state.errorMessage);
   }
 
   render() {
@@ -152,6 +173,12 @@ class App extends Component {
       return (
         <div className="weather-container">
           <p>Loading...</p>
+        </div>
+      );
+    } else if (this.state.errorMessage) {
+      return (
+        <div className="error-message">
+          <p>{this.state.errorMessage}</p>
         </div>
       );
     } else {

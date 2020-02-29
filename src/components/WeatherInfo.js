@@ -9,15 +9,10 @@ class WeatherInfo extends Component {
         : Math.round((temp - 273.15) * (9 / 5) + 32);
 
     return (
-      <div
-        className="card m-4   weather-info shadow "
-        // style={{ width: "18rem", height: "18rem" }}
-      >
+      <div className="card m-4 weather-info shadow ">
         <div className="top">
-          {/* <div className="wrapper"> */}
           <h2 className="title-heading">{this.props.widgetTitle}</h2>
 
-          {/* <div className="weather-today"> */}
           <div className="icon-wrapper">
             <img
               id="wicon"
@@ -42,8 +37,6 @@ class WeatherInfo extends Component {
               </span>
             </span>
           </div>
-          {/* </div> */}
-          {/* </div> */}
         </div>
       </div>
     );

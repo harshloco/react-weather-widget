@@ -9,10 +9,6 @@ class WidgetEditor extends Component {
     this.handleTitleChange = this.handleTitleChange.bind(this);
   }
   handleTemperatureRadio(value) {
-    // console.log("handleTemperatureRadio value : " + value);
-    // this.setState({
-    //   defaultTemperatureUnit: value
-    // });
     this.props.callBackTemperature(value);
   }
   handleWindRadio(value) {
