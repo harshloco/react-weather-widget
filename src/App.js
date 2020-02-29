@@ -1,9 +1,10 @@
 import React, { Component } from "react";
-import logo from "./logo.svg";
 import "./App.css";
-import Navbar from "./layouts/Navbar";
 import API_KEY from "./config.js";
 import { WindDirectionCalculation } from "./utils/windDirectionCalculation";
+import Navbar from "./layouts/Navbar";
+import WidgetEditor from "./components/WidgetEditor";
+import WeatherInfo from "./components/WeatherInfo";
 
 class App extends Component {
   constructor(props) {
@@ -28,8 +29,28 @@ class App extends Component {
       lon: "",
       isLoading: false
     };
-  }
 
+    // Bind the this context to the handler function
+    this.tempHandler = this.tempHandler.bind(this);
+    this.windHandler = this.windHandler.bind(this);
+    this.titleHandler = this.titleHandler.bind(this);
+  }
+  // This method will be sent to the child component
+  tempHandler(tempSelected) {
+    this.setState({
+      defaultTemperatureUnit: tempSelected
+    });
+  }
+  windHandler(windSelected) {
+    this.setState({
+      defaultWind: windSelected
+    });
+  }
+  titleHandler(title) {
+    this.setState({
+      defaultTitle: title.length === 0 ? "Title of widget" : title
+    });
+  }
   componentDidMount() {
     this.setState({ isLoading: true });
 
@@ -39,6 +60,7 @@ class App extends Component {
       maximumAge: 0
     };
 
+    //get user current location
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         pos => {
@@ -81,11 +103,6 @@ class App extends Component {
                 // console.log(
                 //   "icon " + this.state.weather.icon + " TEMP " + this.state.temp
                 // );
-                // this.setState({
-                //   weatherData: weatherObj,
-                //   searchDone: true,
-                //   errorMessage: ""
-                // });
               })
               .catch(error => {
                 // If an error is catch, it's sent to SearchBar as props
@@ -100,9 +117,33 @@ class App extends Component {
             return response;
           }
         },
-        () => {},
+        showError,
         options
       );
+    } else {
+      this.setState({
+        errorMessage: "Geolocation is not supported by this browser."
+      });
+    }
+
+    function showError(error) {
+      switch (error.code) {
+        case error.PERMISSION_DENIED:
+          console.log("User denied the request for Geolocation.");
+          break;
+        case error.POSITION_UNAVAILABLE:
+          console.log("Location information is unavailable.");
+          break;
+        case error.TIMEOUT:
+          console.log("The request to get user location timed out.");
+          break;
+        case error.UNKNOWN_ERROR:
+          console.log("An unknown error occurred.");
+          break;
+        default:
+          console.log("An unknown error occurred.");
+          break;
+      }
     }
   }
 
@@ -117,6 +158,34 @@ class App extends Component {
       return (
         <div className="App">
           <Navbar />
+          <div className="container-fluid" style={{ marginTop: "80px" }}>
+            <div className="card mainCard">
+              <div className="card-body">
+                <div className="row">
+                  <div className="col-lg-6 col-md-6 vl">
+                    <WidgetEditor
+                      tempUnit={this.state.defaultTemperatureUnit}
+                      windUnit={this.state.defaultWind}
+                      callBackTemperature={this.tempHandler}
+                      callBackWind={this.windHandler}
+                      callBackTitle={this.titleHandler}
+                    />
+                  </div>
+
+                  {/* <div className=" col-md-4 vl"></div> */}
+                  <div className="col-lg-6 col-md-6">
+                    <WeatherInfo
+                      weatherData={this.state.weatherData}
+                      tempUnit={this.state.defaultTemperatureUnit}
+                      windUnit={this.state.defaultWind}
+                      s
+                      widgetTitle={this.state.defaultTitle}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       );
     }
